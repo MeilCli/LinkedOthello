@@ -23,6 +23,9 @@ namespace LinkedOthello {
                 }
                 putableList = othello.GetColorableSquare(putColor);
                 if(putableList.Count == 0) {
+                    if(othello.GetColorableSquare(TurnColor(putColor)).Count == 0) {
+                        break;
+                    }
                     Pass();
                     continue;
                 }
@@ -119,10 +122,14 @@ namespace LinkedOthello {
                 b = true;
             } while(b == false);
             othello.PutColor(x - 1,y - 1,putColor);
-            if(putColor == SquareColor.Black) {
-                putColor = SquareColor.White;
+            putColor = TurnColor(putColor);
+        }
+
+        private SquareColor TurnColor(SquareColor color) {
+            if(color == SquareColor.Black) {
+                return SquareColor.White;
             } else {
-                putColor = SquareColor.Black;
+                return SquareColor.Black;
             }
         }
 

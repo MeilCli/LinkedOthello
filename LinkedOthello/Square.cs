@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace LinkedOthello {
-    
+
     public enum SquareColor { White, Black, Null}
     
     public class Square {  
