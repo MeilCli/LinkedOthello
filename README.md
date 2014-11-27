@@ -1,4 +1,4 @@
 LinkedOthello
 =============
 
-オセロ
+Linkedな感じのオセロ考えてみた
