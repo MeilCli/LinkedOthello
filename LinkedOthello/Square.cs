@@ -7,6 +7,17 @@ using System.Threading.Tasks;
 namespace LinkedOthello {
 
     public enum SquareColor { White, Black, Null}
+
+    public static class SquareColorExtensions {
+        public static SquareColor TurnColor(this SquareColor color) {
+            if(color == SquareColor.Black) {
+                return SquareColor.White;
+            } else if(color == SquareColor.White) {
+                return SquareColor.Black;
+            }
+            return color;
+        }
+    }
     
     public class Square {  
 
@@ -30,11 +41,11 @@ namespace LinkedOthello {
 
         public SquareColor Color { get; set; }
 
-        public List<Square> GetLeftOverColorableSquare(SquareColor putColor){
-            SquareColor findColor = putColor == SquareColor.Black ? SquareColor.White : SquareColor.Black;
+        private List<Square> GetColorableSquare(SquareColor putColor,Func<Square,Square> nextSquare) {
+            SquareColor findColor = putColor.TurnColor();
             var list = new List<Square>();
-            Square v = LeftOverSquare;
-            if(v != null && v.Color == findColor) {           
+            Square v = nextSquare(this);
+            if(v != null && v.Color == findColor) {
                 while(v != null) {
                     if(v.Color == putColor) {
                         return list;
@@ -43,151 +54,43 @@ namespace LinkedOthello {
                         return list;
                     }
                     list.Add(v);
-                    v = v.LeftOverSquare;
+                    v = nextSquare(v);
                 }
                 list.Clear();
             }
             return list;
+        }
+
+        public List<Square> GetLeftOverColorableSquare(SquareColor putColor){
+            return GetColorableSquare(putColor,s => s.LeftOverSquare);
         }
 
         public List<Square> GetOverColorableSquare(SquareColor putColor) {
-            SquareColor findColor = putColor == SquareColor.Black ? SquareColor.White : SquareColor.Black;
-            var list = new List<Square>();
-            Square v = OverSquare;
-            if(v != null && v.Color == findColor) {
-                while(v != null) {
-                    if(v.Color == putColor) {
-                        return list;
-                    } else if(v.Color == SquareColor.Null) {
-                        list.Clear();
-                        return list;
-                    }
-                    list.Add(v);
-                    v = v.OverSquare;
-                }
-                list.Clear();
-            }
-            return list;
+            return GetColorableSquare(putColor,s => s.OverSquare);
         }
 
         public List<Square> GetRightOverColorableSquare(SquareColor putColor) {
-            SquareColor findColor = putColor == SquareColor.Black ? SquareColor.White : SquareColor.Black;
-            var list = new List<Square>();
-            Square v = RightOverSquare;
-            if(v != null && v.Color == findColor) {
-                while(v != null) {
-                    if(v.Color == putColor) {
-                        return list;
-                    } else if(v.Color == SquareColor.Null) {
-                        list.Clear();
-                        return list;
-                    }
-                    list.Add(v);
-                    v = v.RightOverSquare;
-                }
-                list.Clear();
-            }
-            return list;
+            return GetColorableSquare(putColor,s => s.RightOverSquare);
         }
 
         public List<Square> GetRightColorableSquare(SquareColor putColor) {
-            SquareColor findColor = putColor == SquareColor.Black ? SquareColor.White : SquareColor.Black;
-            var list = new List<Square>();
-            Square v = RightSquare;
-            if(v != null && v.Color == findColor) {
-                while(v != null) {
-                    if(v.Color == putColor) {
-                        return list;
-                    } else if(v.Color == SquareColor.Null) {
-                        list.Clear();
-                        return list;
-                    }
-                    list.Add(v);
-                    v = v.RightSquare;
-                }
-                list.Clear();
-            }
-            return list;
+            return GetColorableSquare(putColor,s => s.RightSquare);
         }
 
         public List<Square> GetRightUnderColorableSquare(SquareColor putColor) {
-            SquareColor findColor = putColor == SquareColor.Black ? SquareColor.White : SquareColor.Black;
-            var list = new List<Square>();
-            Square v = RightUnderSquare;
-            if(v != null && v.Color == findColor) {
-                while(v != null) {
-                    if(v.Color == putColor) {
-                        return list;
-                    } else if(v.Color == SquareColor.Null) {
-                        list.Clear();
-                        return list;
-                    }
-                    list.Add(v);
-                    v = v.RightUnderSquare;
-                }
-                list.Clear();
-            }
-            return list;
+            return GetColorableSquare(putColor,s => s.RightUnderSquare);
         }
 
         public List<Square> GetUnderColorableSquare(SquareColor putColor) {
-            SquareColor findColor = putColor == SquareColor.Black ? SquareColor.White : SquareColor.Black;
-            var list = new List<Square>();
-            Square v = UnderSquare;
-            if(v != null && v.Color == findColor) {
-                while(v != null) {
-                    if(v.Color == putColor) {
-                        return list;
-                    } else if(v.Color == SquareColor.Null) {
-                        list.Clear();
-                        return list;
-                    }
-                    list.Add(v);
-                    v = v.UnderSquare;
-                }
-                list.Clear();
-            }
-            return list;
+            return GetColorableSquare(putColor,s => s.UnderSquare);
         }
 
         public List<Square> GetLeftUnderColorableSquare(SquareColor putColor) {
-            SquareColor findColor = putColor == SquareColor.Black ? SquareColor.White : SquareColor.Black;
-            var list = new List<Square>();
-            Square v = LeftUnderSquare;
-            if(v != null && v.Color == findColor) {
-                while(v != null) {
-                    if(v.Color == putColor) {
-                        return list;
-                    } else if(v.Color == SquareColor.Null) {
-                        list.Clear();
-                        return list;
-                    }
-                    list.Add(v);
-                    v = v.LeftUnderSquare;
-                }
-                list.Clear();
-            }
-            return list;
+            return GetColorableSquare(putColor,s => s.LeftUnderSquare);
         }
 
         public List<Square> GetLeftColorableSquare(SquareColor putColor) {
-            SquareColor findColor = putColor == SquareColor.Black ? SquareColor.White : SquareColor.Black;
-            var list = new List<Square>();
-            Square v = LeftSquare;
-            if(v != null && v.Color == findColor) {
-                while(v != null) {
-                    if(v.Color == putColor) {
-                        return list;
-                    } else if(v.Color == SquareColor.Null) {
-                        list.Clear();
-                        return list;
-                    }
-                    list.Add(v);
-                    v = v.LeftSquare;
-                }
-                list.Clear();
-            }
-            return list;
+            return GetColorableSquare(putColor,s => s.LeftSquare);
         }
 
         public override bool Equals(object obj) {
