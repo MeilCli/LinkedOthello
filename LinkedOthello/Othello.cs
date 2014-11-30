@@ -96,7 +96,7 @@ namespace LinkedOthello {
             return list;
         }
 
-        public void PutColor(int x,int y,SquareColor putColor) {
+        public List<Square> GetTurnableSquare(int x,int y,SquareColor putColor) {
             var list = new List<Square>();
             Square s = Square[x,y];
             list.AddRange(s.GetLeftOverColorableSquare(putColor));
@@ -107,6 +107,12 @@ namespace LinkedOthello {
             list.AddRange(s.GetUnderColorableSquare(putColor));
             list.AddRange(s.GetLeftUnderColorableSquare(putColor));
             list.AddRange(s.GetLeftColorableSquare(putColor));
+            return list;
+        }
+
+        public void PutColor(int x,int y,SquareColor putColor) {
+            var list = GetTurnableSquare(x,y,putColor);
+            Square s = Square[x,y];
             foreach(var v in list) {
                 v.Color = putColor;
             }

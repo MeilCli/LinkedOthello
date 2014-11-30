@@ -16,27 +16,61 @@ namespace LinkedOthello {
         private Othello8 othello = new Othello8();
         private List<Square> putableList;
         private Dictionary<int,Square> putableMap = new Dictionary<int,Square>();
-        private SquareColor putColor = SquareColor.Black;
+        private SquareColor putColor;
+        private SquareColor botColor;
+        private BaseOthelloBot bot;
 
         public void Start() {
+            putColor = ReadPutColor();
+            botColor = putColor.TurnColor();
+            bot = new BaseOthelloBot(othello,botColor);
+            SquareColor turnColor = SquareColor.Black;
             while(othello.PutableCount() > 0) {
                 if(othello.BlackCount() == 0 || othello.WhiteCount() == 0) {
                     break;
                 }
-                putableList = othello.GetColorableSquare(putColor);
+                putableList = othello.GetColorableSquare(turnColor);
                 if(putableList.Count == 0) {
-                    putableList = othello.GetColorableSquare(putColor.TurnColor());
+                    putableList = othello.GetColorableSquare(turnColor.TurnColor());
                     if(putableList.Count == 0) {
                         break;
                     }
-                    Pass();
+                    Pass(turnColor);
+                    turnColor = turnColor.TurnColor();
                 }
-                Write();
-                Put();
+                if(turnColor == botColor) {
+                    putableList.Clear();
+                    Write();
+                    Write("\n");
+                    Square s = bot.PutNextSquare();
+                    othello.PutColor(s.X,s.Y,botColor);
+                    Write();
+                } else {
+                    Write();
+                    Put();
+                }
+                turnColor = turnColor.TurnColor();
+                Write("\n");
             }
             putableList.Clear();
             Write();
             Write("\n● : " + othello.BlackCount() + " ○ : " + othello.WhiteCount() + "\n");
+        }
+
+        private SquareColor ReadPutColor() {
+            Write("○か●を入力してください\n");
+            SquareColor putColor;
+            while(true) {
+                string r = Console.In.ReadLine();
+                if(r == "○" || r == "0") {
+                    putColor = SquareColor.White;
+                    break;
+                } else if(r == "●" || r == "1") {
+                    putColor = SquareColor.Black;
+                    break;
+                }
+            }
+            return putColor;
         }
 
         private void Write(string s) {
@@ -80,11 +114,10 @@ namespace LinkedOthello {
             }
         }
 
-        private void Pass() {
+        private void Pass(SquareColor turnColor) {
             Write("\n");
-            Write(putColor);
+            Write(turnColor);
             Write("のパス。\n\n");
-            putColor = putColor.TurnColor();
         }
 
         private void Put() {
@@ -111,9 +144,7 @@ namespace LinkedOthello {
                 y = s.Y;
                 b = true;
             } while(b == false);
-            othello.PutColor(x
-                ,y,putColor);
-            putColor = putColor.TurnColor();
+            othello.PutColor(x,y,putColor);
         }
 
     }

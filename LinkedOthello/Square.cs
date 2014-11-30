@@ -93,6 +93,15 @@ namespace LinkedOthello {
             return GetColorableSquare(putColor,s => s.LeftSquare);
         }
 
+        public bool IsSideSquare() {
+            return LeftSquare == null || OverSquare == null || RightSquare == null || UnderSquare == null;
+        }
+
+        public bool IsCornerSquare() {
+            return IsSideSquare() == true && (LeftOverSquare == null || RightOverSquare == null
+                || RightUnderSquare == null || LeftUnderSquare == null);
+        }
+
         public override bool Equals(object obj) {
             return base.Equals(obj) && obj is Square && (obj as Square).X == X && (obj as Square).Y == Y;
         }
